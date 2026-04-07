@@ -132,6 +132,8 @@ void scan_to_cloud_f(ouster_ros::Cloud<PointT>& cloud, PointS& staging_point,
     int h = static_cast<int>(ls.h);
     int w = static_cast<int>(ls.w);
 
+    static uint64_t MSEC_OF_THE_DAY = 24 * 60 * 60 * 1000;
+
     for (auto u = 0; u < h; u += rows_step) {
         for (auto v = 0; v < w; ++v) {   // TODO[UN]: consider cols_step in future
             const auto v_shift =
@@ -142,8 +144,8 @@ void scan_to_cloud_f(ouster_ros::Cloud<PointT>& cloud, PointS& staging_point,
                 organized ? (u / rows_step) * w + v : cloud.size();
 
             // copy the timestamp of associated point
-            auto ts =
-                timestamp[v_shift] > scan_ts ? timestamp[v_shift] - scan_ts : 0UL;
+            auto ts_msec = timestamp[v_shift] / 1000000;     // ns -> ms
+            auto ts_msec_of_the_day = static_cast<uint32_t>(ts_msec % MSEC_OF_THE_DAY);
 
             if (organized) {
                 // set is_dense to false if any of the xyz coordinates is NaN
@@ -168,7 +170,7 @@ void scan_to_cloud_f(ouster_ros::Cloud<PointT>& cloud, PointS& staging_point,
             // values if known before hand that the target point cloud does
             // not have a field to hold the timestamp or a ring for example the
             // case of pcl::PointXYZ or pcl::PointXYZI.
-            pt.t = static_cast<uint32_t>(ts);
+            pt.t = ts_msec_of_the_day;
             pt.ring = static_cast<uint16_t>(u);
             copy_lidar_scan_fields_to_point<0>(pt, ls_tuple, src_idx);
             // only perform point transform operation when PointT, and PointS

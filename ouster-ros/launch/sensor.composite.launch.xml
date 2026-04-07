@@ -16,7 +16,7 @@
     RNG15_RFL8_NIR8_ZONE16,
     RNG19_RFL8_SIG16_NIR16_ZONE16
    -->
-  <arg name="udp_profile_lidar" default=""
+  <arg name="udp_profile_lidar" default="LEGACY"
     description="lidar packet profile; possible values: {
     LEGACY,
     RNG19_RFL8_SIG16_NIR16,
@@ -49,7 +49,7 @@
     NORMAL,
     EXTENDED
     }"/>
-  <arg name="lidar_mode" default=""
+  <arg name="lidar_mode" default="2048x10"
     description="resolution and rate; possible values: {
     512x10,
     512x20,
@@ -163,14 +163,14 @@
   <arg name="auto_start" default="true"
     description="automatically configure and activate the node"/>
 
-  <arg name="organized" default="true"
+  <arg name="organized" default="false"
     description="generate an organzied point cloud"/>
   <arg name="destagger" default="true"
     description="enable or disable point cloud destaggering"/>
 
-  <arg name="min_range" default="0.0"
+  <arg name="min_range" default="1.0"
     description="minimum lidar range to consider (meters)"/>
-  <arg name="max_range" default="10000.0"
+  <arg name="max_range" default="100.0"
     description="minimum lidar range to consider (meters)"/>
 
   <arg name="min_scan_valid_columns_ratio" default="0.0"
@@ -236,9 +236,9 @@
     </node>
   </group>
 
-  <include if="$(var viz)" file="$(find-pkg-share ouster_ros)/launch/rviz.launch.xml">
+  <!--include if="$(var viz)" file="$(find-pkg-share ouster_ros)/launch/rviz.launch.xml">
     <arg name="ouster_ns" value="$(var ouster_ns)"/>
     <arg name="rviz_config" value="$(var rviz_config)"/>
-  </include>
+  </include-->
 
 </launch>
